@@ -10,7 +10,7 @@ from articles.serializers import ArticleListSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
-    class Meta: 
+    class Meta:
         model = User
         fields = "__all__"
         extra_kwargs = {
@@ -35,11 +35,12 @@ class UserSerializer(serializers.ModelSerializer):
         to_email = user.email
         email = EmailMessage(
             "AOA 술술술 이메일 인증",
-            f"http://127.0.0.1:8000/users/activate/{uidb64}/{token}",
+            f"https://backend.drinkdrinkdrink.xyz/users/activate/{uidb64}/{token}",
             to=[to_email],
         )
         email.send()
         return user
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     # followings = serializers.StringRelatedField(many=True) user_id로 설정하고 싶을 때 사용
@@ -51,41 +52,50 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "user_id", "nickname", "profile_img", "password",
-                  "fav_alcohol", "amo_alcohol", "followings","followers","like_articles", "my_articles")
-        
+        fields = (
+            "id",
+            "user_id",
+            "nickname",
+            "profile_img",
+            "password",
+            "fav_alcohol",
+            "amo_alcohol",
+            "followings",
+            "followers",
+            "like_articles",
+            "my_articles",
+        )
+
         # "followers", "my_articles","like_articles"
 
 
 class UserProfileEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["user_id","nickname","profile_img","fav_alcohol", "amo_alcohol","password"]
+        fields = [
+            "user_id",
+            "nickname",
+            "profile_img",
+            "fav_alcohol",
+            "amo_alcohol",
+            "password",
+        ]
         extra_kwargs = {
             "user_id": {
                 "read_only": True,
             },
-
-            "password":{
+            "password": {
                 "write_only": True,
             },
         }
 
     # instance = database
     def update(self, instance, validated_data):
-        instance.nickname = validated_data.get('nickname', instance.nickname)
-        instance.profile_img = validated_data.get('profile_img', instance.profile_img)
-        instance.fav_alcohol = validated_data.get('fav_alcohol', instance.fav_alcohol)
-        instance.amo_alcohol = validated_data.get('amo_alcohol', instance.amo_alcohol)
+        instance.nickname = validated_data.get("nickname", instance.nickname)
+        instance.profile_img = validated_data.get("profile_img", instance.profile_img)
+        instance.fav_alcohol = validated_data.get("fav_alcohol", instance.fav_alcohol)
+        instance.amo_alcohol = validated_data.get("amo_alcohol", instance.amo_alcohol)
         password = validated_data.pop("password")
-        instance.set_password(password) # 해싱
-        instance.save() # 데이터베이스에 저장
+        instance.set_password(password)  # 해싱
+        instance.save()  # 데이터베이스에 저장
         return instance
-
-
-
-
-
-    
-    
-    
