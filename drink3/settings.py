@@ -43,6 +43,8 @@ def get_secret(setting, secrets=secrets):
 
 
 SECRET_KEY = get_secret("SECRET_KEY")  # SECRET_KEY 가져오기
+CF_ID = get_secret("CF_ID")
+CF_TOKEN = get_secret("CF_TOKEN")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = "RENDER" not in os.environ

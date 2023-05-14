@@ -36,7 +36,7 @@ class User(AbstractBaseUser):
         unique=True,
     )
     nickname = models.CharField("닉네임", max_length=10, null=True)
-    profile_img = models.ImageField("프로필 사진", null=True, blank=True, upload_to="%Y/%m")
+    profile_img = models.URLField()
     age = models.PositiveIntegerField("나이", validators=[MinValueValidator(20)])
     followings = models.ManyToManyField(
         settings.AUTH_USER_MODEL, related_name="followers", blank=True

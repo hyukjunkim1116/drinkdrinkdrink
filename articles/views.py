@@ -21,8 +21,10 @@ class HomeView(APIView):
         order_condition = request.query_params.get("order", None)
         if order_condition == "recent":
             articles = Article.objects.order_by("-created_at")
-        if order_condition == 'likes':
-            articles = Article.objects.annotate(likes_count=Count('likes')).order_by('-likes_count')
+        if order_condition == "likes":
+            articles = Article.objects.annotate(likes_count=Count("likes")).order_by(
+                "-likes_count"
+            )
         if order_condition == "stars":
             articles = Article.objects.order_by("-stars")
         try:
@@ -31,7 +33,7 @@ class HomeView(APIView):
         except ValueError:
             page = 1
         page_size = settings.PAGE_SIZE
-        start = (page - 1)*page_size
+        start = (page - 1) * page_size
         end = start + page_size
         serializer = ArticleListSerializer(
             articles[start:end],
@@ -155,3 +157,16 @@ class CommentDetailView(APIView):
             return Response("삭제완료", status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
+
+
+# 1회용 이미지 업로드 URL 만들기
+class GetUploadURL(APIView):
+    def post(self, request):
+        url = f"https://api.cloudflare.com/client/v4/accounts/{settings.CF_ID}/images/v2/direct_upload"
+        one_time_url = request.post(
+            url,
+            headers={"Authorization": f"Bearer {settings.CF_TOKEN}"},
+        )
+        one_time_url = one_time_url.json()
+        result = one_time_url.get("result")
+        return Rseponse({"id": result.get("id"), "uploadURL": result.get("uploadURL")})
