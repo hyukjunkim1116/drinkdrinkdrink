@@ -43,7 +43,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    # followings = serializers.StringRelatedField(many=True) user_id로 설정하고 싶을 때 사용
+    # followings = serializers.StringRelatedField(many=True) identify로 설정하고 싶을 때 사용
     # related_name 으로 설정함
     followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     my_articles = ArticleListSerializer(many=True)
@@ -80,8 +80,9 @@ class UserProfileEditSerializer(serializers.ModelSerializer):
             "amo_alcohol",
             "password",
         ]
+
         extra_kwargs = {
-            "user_id": {
+            "identify": {
                 "read_only": True,
             },
             "password": {
