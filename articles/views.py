@@ -21,8 +21,10 @@ class HomeView(APIView):
         order_condition = request.query_params.get("order", None)
         if order_condition == "recent":
             articles = Article.objects.order_by("created_at")
-        if order_condition == 'likes':
-            articles = Article.objects.annotate(likes_count=Count('likes')).order_by('-likes_count')
+        if order_condition == "likes":
+            articles = Article.objects.annotate(likes_count=Count("likes")).order_by(
+                "-likes_count"
+            )
         if order_condition == "stars":
             articles = Article.objects.order_by("-stars")
         try:
@@ -31,7 +33,7 @@ class HomeView(APIView):
         except ValueError:
             page = 1
         page_size = settings.PAGE_SIZE
-        start = (page - 1)*page_size
+        start = (page - 1) * page_size
         end = start + page_size
         serializer = ArticleListSerializer(
             articles[start:end],
